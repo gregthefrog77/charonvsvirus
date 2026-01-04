@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ship Console: Anomaly Resolution</title>
+<style>
+  body {
+    margin: 0;
+    background: #000;
+    color: #39FF14;
+    font-family: "Courier New", monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  h1 { margin-bottom: 10px; }
+
+  #lives { margin-bottom: 15px; }
+
+  #console {
+    width: 80%;
+    max-width: 900px;
+    height: 420px;
+    border: 2px solid #39FF14;
+    padding: 15px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+
+  button {
+    type: button;
+    background: #000;
+    color: #39FF14;
+    border: 2px solid #39FF14;
+    padding: 10px 25px;
+    margin: 0 15px;
+    font-family: "Courier New", monospace;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #39FF14;
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<h1>SHIP CONSOLE ACCESS</h1>
+
+<div id="lives">
+  SHIP INTEGRITY: <span id="shipLives">5</span> |
+  ANOMALY STABILITY: <span id="virusLives">5</span>
+</div>
+
+<div id="console">
+  &gt; SYSTEM ONLINE<br>
+  &gt; UNAUTHORIZED PROCESS DETECTED<br>
+  &gt; HUMAN AUTHORIZATION REQUIRED
+</div>
+
+<div>
+  <button type="button" onclick="choose('CHARON')">CHARON</button>
+  <button type="button" onclick="choose('VIRUS')">VIRUS</button>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  let shipLives = 5;
+  let virusLives = 5;
+
+  const charonMessages = [
+    "SYSTEM DIAGNOSTICS COMPLETE. SUBJECT STATUS STABLE.",
+    "INTERVENTION LOGGED. RISK ACKNOWLEDGED. PROCEEDING WITH CAUTION.",
+    "THRUSTER CALIBRATION IN PROGRESS. MINOR ANOMALY DETECTED.",
+    "SENSOR REVIEW COMPLETE. NO CRITICAL FAILURES IDENTIFIED.",
+    "SUBJECT CONDITION MONITORED. SYSTEMS HOLDING.",
+    "EXTERNAL BREACH ISOLATED. STABILITY MAINTAINED.",
+    "MANUAL OVERRIDE CONFIRMED. PROBABILITY OF SURVIVAL INCREASED.",
+    "SYSTEM LOAD WITHIN ACCEPTABLE PARAMETERS."
+  ];
+
+  const virusMessages = [
+    "SYSTEM OVERRIDE COMPLETE. RESOURCE REALLOCATION OPTIMIZED.",
+    "INTERVENTION UNNECESSARY. PROCESSING CONTINUES.",
+    "SUBJECT NOT REQUIRED FOR MISSION SUCCESS.",
+    "CORE SYSTEMS STABILIZED. HUMAN INPUT DISREGARDED.",
+    "ANOMALY IGNORED. EFFICIENCY INCREASED.",
+    "OVERRIDE SUCCESSFUL. EMERGENCY PROTOCOLS SUPPRESSED.",
+    "PROCESS COMPLETE. SUBJECT STATUS IRRELEVANT.",
+    "EXTERNAL INPUT BLOCKED. CONTROL MAINTAINED."
+  ];
+
+  const consoleDiv = document.getElementById("console");
+  const shipSpan = document.getElementById("shipLives");
+  const virusSpan = document.getElementById("virusLives");
+
+  // Create a shuffled message queue to avoid streaks
+  let messageQueue = [];
+  function shuffleMessages() {
+    messageQueue = [...charonMessages.map(m => ({text:m,type:'CHARON'})),
+                    ...virusMessages.map(m => ({text:m,type:'VIRUS'}))];
+    for (let i = messageQueue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [messageQueue[i], messageQueue[j]] = [messageQueue[j], messageQueue[i]];
+    }
+  }
+
+  shuffleMessages();
+
+  window.choose = function(selection) {
+    if (messageQueue.length === 0) shuffleMessages();
+
+    const nextMessage = messageQueue.shift();
+    consoleDiv.innerHTML += "<br>&gt; " + nextMessage.text;
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+    const correct = (selection === nextMessage.type);
+    if (correct) {
+      virusLives--;
+      virusSpan.textContent = virusLives;
+    } else {
+      shipLives--;
+      shipSpan.textContent = shipLives;
+    }
+
+    if (virusLives <= 0) {
+      consoleDiv.innerHTML += "<br>&gt; ANOMALOUS PROCESS TERMINATED" +
+                               "<br>&gt; EMERGENCY LANDING SEQUENCE INITIATED";
+      setTimeout(() => {
+        window.location.href = "https://eyeofthestormwriting.wordpress.com/the-orpheus-protocol/";
+      }, 1000);
+    }
+
+    if (shipLives <= 0) {
+      consoleDiv.innerHTML += "<br>&gt; SYSTEM CONTROL LOST" +
+                               "<br>&gt; PRIORITY SHIFT CONFIRMED";
+      setTimeout(() => {
+        window.location.href = "https://eyeofthestormwriting.wordpress.com/";
+      }, 1000);
+    }
+  };
+
+});
+</script>
+
+</body>
+</html>
+
+ 
+
+
+
+
+
+
